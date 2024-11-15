@@ -14,7 +14,7 @@ pipeline {
             steps {
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'e0574566-962e-44ee-aed6-82d6648901bc', url: 'https://github.com/FtownDev/om-software-deploy.git']])
 
-                powershell 'Get-Content -Path ${WORKSPACE})\\kubernetes\\${DEPLOYMENT_FILE}'
+                powershell 'Get-Content -Path "${WORKSPACE}\\kubernetes\\${DEPLOYMENT_FILE}"'
             }
         }
         stage('Verify kubectl') {
@@ -30,7 +30,7 @@ pipeline {
                     writeFile file: '${WORKSPACE}\\kubeconfig', text: '${KUBECONFIG}'
 
                     // Apply the deployment
-                    powershell 'kubectl apply -f ${WORKSPACE})\\kubernetes\\${DEPLOYMENT_FILE}'
+                    powershell 'kubectl apply -f "${WORKSPACE}\\kubernetes\\${DEPLOYMENT_FILE}"'
 
 
                 }
