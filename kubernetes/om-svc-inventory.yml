@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: om-svc-inventory
+  namespace: default
+  labels:
+    app: om-svc-inventory
+spec:
+  selector:
+    matchLabels:
+      app: om-svc-inventory
+  template:
+    metadata:
+      labels:
+        app: om-svc-inventory
+    spec:
+      containers:
+        - name: om-svc-inventory
+          image: b3cecchini/om-om-svc-inventory:latest
+          imagePullPolicy: Always
+          env:
+            - name: ConnectionStrings__DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: db-inventory
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: om-svc-inventory
+  labels:
+    app: om-svc-inventory
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: om-svc-inventory

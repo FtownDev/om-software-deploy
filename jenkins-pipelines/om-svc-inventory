@@ -1,0 +1,40 @@
+/* groovylint-disable NestedBlockDepth */
+/* groovylint-disable-next-line CompileStatic */
+pipeline {
+    agent any
+
+    environment {
+        // Update these variables according to your setup
+        KUBECONFIG = credentials('digital-ocean-kubeconfig')
+        DEPLOYMENT_FILE = "om-svc-inventory.yml"
+    }
+
+    stages {
+        stage('Verify kubectl') {
+            steps {
+                powershell 'kubectl version --client'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Write the kubeconfig content directly to a file
+                    writeFile file: "${WORKSPACE}\\kubeconfig", text: "${KUBECONFIG}"
+
+                    // Apply the deployment
+                    powershell 'kubectl apply -f ${DEPLOYMENT_FILE}'
+
+
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up the temporary kubeconfig
+            powershell 'Remove-Item -Path "${WORKSPACE}\\kubeconfig" -Force -ErrorAction SilentlyContinue'
+        }
+    }
+}
