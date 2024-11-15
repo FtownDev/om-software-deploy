@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: om-svc-inventory
-          image: b3cecchini/om-om-svc-inventory:latest
+          image: b3cecchini/om-svc-inventory:latest
           imagePullPolicy: Always
           env:
             - name: ConnectionStrings__DefaultConnection
