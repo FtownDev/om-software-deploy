@@ -1,0 +1,46 @@
+/* groovylint-disable NestedBlockDepth */
+/* groovylint-disable-next-line CompileStatic */
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = credentials('digital-ocean-kubeconfig')
+        DEPLOYMENT_FILE = "om-svc-gateway.yml"
+    }
+
+    stages {
+        stage ('Checkout') {
+            steps {
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'e0574566-962e-44ee-aed6-82d6648901bc', url: 'https://github.com/FtownDev/om-svc-gateway.git']])
+
+                powershell 'Get-Content -Path "$env:WORKSPACE\\kubernetes\\$env:DEPLOYMENT_FILE"'
+            }
+        }
+        stage('Verify kubectl') {
+            steps {
+                powershell 'kubectl version --client'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                script {
+                    // Write the kubeconfig content directly to a file
+                    writeFile file: '${WORKSPACE}\\kubeconfig', text: '${KUBECONFIG}'
+
+                    // Apply the deployment
+                    powershell 'kubectl apply -f "$env:WORKSPACE\\kubernetes\\$env:DEPLOYMENT_FILE"'
+
+
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Clean up the temporary kubeconfig
+            powershell 'Remove-Item -Path "${WORKSPACE}\\kubeconfig" -Force -ErrorAction SilentlyContinue'
+        }
+    }
+}
