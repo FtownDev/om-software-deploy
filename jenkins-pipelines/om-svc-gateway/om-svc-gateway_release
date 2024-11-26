@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage ('Checkout') {
             steps {
-                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'e0574566-962e-44ee-aed6-82d6648901bc', url: 'https://github.com/FtownDev/om-svc-gateway.git']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'e0574566-962e-44ee-aed6-82d6648901bc', url: 'https://github.com/FtownDev/om-software-deploy.git']])
 
                 powershell 'Get-Content -Path "$env:WORKSPACE\\kubernetes\\$env:DEPLOYMENT_FILE"'
             }
