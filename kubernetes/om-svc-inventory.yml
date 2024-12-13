@@ -24,6 +24,11 @@ spec:
                 secretKeyRef:
                   name: db-secrets
                   key: db-inventory
+            - name: ConnectionStrings__RedisCache
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: redis-cache
           ports:
             - containerPort: 8080
 ---
