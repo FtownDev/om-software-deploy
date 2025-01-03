@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-svc-keycloak
+  labels:
+    app: app-svc-keycloak
+spec:
+  selector:
+    matchLabels:
+      app: app-svc-keycloak
+  template:
+    metadata:
+      labels:
+        app: app-svc-keycloak
+    spec:
+      containers:
+        - name: app-svc-keycloak
+          image: quay.io/keycloak/keycloak:25.0
+          args: ["start", "--optimized"]
+          env:
+            - name: KEYCLOAK_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: kc-secrets
+                  key: admin-username
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kc-secrets
+                  key: admin-password
+            - name: KC_DB
+              value: "postgres"
+            - name: KC_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: kc-secrets
+                  key: db-host
+            - name: KC_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: kc-secrets
+                  key: db-port
+            - name: KC_DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: kc-secrets
+                  key: db-name
+            - name: KC_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kc-secrets
+                  key: db-username
+            - name: KC_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kc-secrets
+                  key: db-password
+            - name: KC_PROXY
+              value: "edge"
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
+            - name: KC_HOSTNAME_STRICT_HTTPS
+              value: "false"
+            - name: KC_HTTP_RELATIVE_PATH
+              value: "/auth"
+            - name: KC_TRANSACTION_XA_ENABLED
+              value: "false"
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /auth/health/ready
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /auth/health/live
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-svc-keycloak
+  labels:
+    app: app-svc-keycloak
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: app-svc-keycloak
+  type: ClusterIP
