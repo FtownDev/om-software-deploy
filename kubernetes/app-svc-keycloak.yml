@@ -30,17 +30,17 @@ spec:
                   key: admin-password
             - name: KC_DB
               value: "postgres"
-            - name: KC_DB_HOST
+            - name: KC_DB_URL_HOST
               valueFrom:
                 secretKeyRef:
                   name: kc-secrets
                   key: db-host
-            - name: KC_DB_PORT
+            - name: KC_DB_URL_PORT
               valueFrom:
                 secretKeyRef:
                   name: kc-secrets
                   key: db-port
-            - name: KC_DB_DATABASE
+            - name: KC_DB_URL_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: kc-secrets
@@ -61,6 +61,8 @@ spec:
               value: "false"
             - name: KC_HOSTNAME_STRICT_HTTPS
               value: "false"
+            - name: KC_HTTP_ENABLED
+              value: "true"
             - name: KC_HTTP_RELATIVE_PATH
               value: "/auth"
             - name: KC_TRANSACTION_XA_ENABLED
