@@ -29,22 +29,22 @@ spec:
                   name: kc-secrets
                   key: admin-password
             - name: KC_DB
-              value: "postgres"
-            - name: KC_DB_URL_HOST
+              value: postgres
+            - name: KC_DB_URL
               valueFrom:
                 secretKeyRef:
                   name: kc-secrets
                   key: db-host
-            - name: KC_DB_URL_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: kc-secrets
-                  key: db-port
-            - name: KC_DB_URL_DATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: kc-secrets
-                  key: db-name
+            # - name: KC_DB_URL_PORT
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: kc-secrets
+            #       key: db-port
+            # - name: KC_DB_URL_DATABASE
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: kc-secrets
+            #       key: db-name
             - name: KC_DB_USERNAME
               valueFrom:
                 secretKeyRef:

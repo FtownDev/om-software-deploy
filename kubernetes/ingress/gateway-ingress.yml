@@ -10,6 +10,7 @@ spec:
   tls:
     - hosts:
         - ftown.dev
+        - login.ftown.dev
       secretName: ftown-dev-tls
   rules:
     - host: ftown.dev
@@ -22,3 +23,13 @@ spec:
                 name: om-svc-gateway
                 port:
                   number: 80
+    - host: login.ftown.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-svc-keycloak
+                port:
+                  number: 8080
