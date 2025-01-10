@@ -11,6 +11,7 @@ spec:
     - hosts:
         - ftown.dev
         - login.ftown.dev
+        - app.ftown.dev
       secretName: ftown-dev-tls
   rules:
     - host: ftown.dev
@@ -33,3 +34,13 @@ spec:
                 name: app-svc-keycloak
                 port:
                   number: 8080
+    - host: app.ftown.dev
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: om-ui-web
+                port:
+                  number: 80
