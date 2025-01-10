@@ -6,6 +6,7 @@ pipeline {
         DOCKERHUB_CREDENTIALS = credentials('b3cecchini-dockerhub')
         DOCKER_IMAGE = 'b3cecchini/om-ui-web'
         API_BASE_URL = credentials('api-base-url')
+        ENV_FILE_PATH = 'src/environments/environment.production.ts'
     }
     stages {
         stage('Login to DockerHub'){
@@ -22,12 +23,9 @@ pipeline {
         }
         stage('Token Replace'){
             steps {
-                script {
-                    powershell """
-                    $envFilePath = 'src/environments/environment.production.ts'
-                    (Get-Content $envFilePath) -replace '#{API_BASE_URL}#', '${API_BASE_URL}' | Set-Content $envFilePath
-                    """
-                }
+                powershell '''
+                (Get-Content $env:ENV_FILE_PATH) -replace '#{API_BASE_URL}#', '$env:API_BASE_URL' | Set-Content $env:ENV_FILE_PATH
+                '''
             }
         }
         stage('Build Docker Image') {
