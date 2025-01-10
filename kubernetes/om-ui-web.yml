@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: om-ui-web
+  namespace: default
+  labels:
+    app: om-ui-web
+spec:
+  selector:
+    matchLabels:
+      app: om-ui-web
+  template:
+    metadata:
+      labels:
+        app: om-ui-web
+    spec:
+      containers:
+        - name: om-ui-web
+          image: b3cecchini/om-ui-web:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: om-ui-web
+  labels:
+    app: om-ui-web
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: om-ui-web
