@@ -24,7 +24,7 @@ pipeline {
         stage('Token Replace'){
             steps {
                 powershell '''
-                (Get-Content $env:ENV_FILE_PATH) -replace '#{API_BASE_URL}#', '$env:API_BASE_URL' | Set-Content $env:ENV_FILE_PATH
+                (Get-Content $env:ENV_FILE_PATH) -replace '#{API_BASE_URL}#', $env:API_BASE_URL | Set-Content $env:ENV_FILE_PATH
                 '''
             }
         }
